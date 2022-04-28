@@ -1,0 +1,9 @@
+clfparser==0.3
+random-user-agent==1.0.1
+Faker==11.3.0
+requests==2.27.1
+tqdm==4.62.3
+requests-async==0.6.2
+user-agents==2.2.0
+country-list==1.0.0
+pandas==1.3.5

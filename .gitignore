@@ -1,0 +1,5 @@
+postgres/data/
+spark/dependencies/
+sqlserver/data/
+storage/logs_processed
+storage/spreadsheets_processed

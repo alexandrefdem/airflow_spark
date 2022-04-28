@@ -1,0 +1,121 @@
+version: '3.7'
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+  postgres:
+    image: postgres:9.6
+    env_file:
+      - config/common.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - './postgres/data:/var/lib/postgresql/data'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U airflow" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  airflow-webserver:
+    build: .
+    restart: always
+    command: webserver
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file: 
+      - config/common.env
+    volumes:
+      - '.:/root/airflowmount/'
+      - './dags/:/root/airflow/dags'
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /airflow/airflow-webserver.pid ]" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  airflow-worker-1:
+    build: .
+    command: worker
+    restart: always
+    depends_on:
+      - airflow-webserver
+    ports:
+      - "8081:8080"
+    env_file: 
+      - config/common.env
+    volumes:
+      - '.:/root/airflowmount/'
+      - './dags/:/root/airflow/dags'
+    environment:
+      - QUEUE_NAME=queue_1
+  airflow-worker-2:
+    build: .
+    command: worker
+    restart: always
+    depends_on:
+      - airflow-webserver
+    ports:
+      - "8082:8080"
+    env_file: 
+      - config/common.env
+    volumes:
+      - '.:/root/airflowmount/'
+      - './dags/:/root/airflow/dags'
+    environment:
+      - QUEUE_NAME=queue_1
+  airflow-flower:
+    build: .
+    command: flower
+    restart: always
+    depends_on:
+      - airflow-worker-1
+      - airflow-worker-2
+    ports:
+      - "5555:5555"
+    env_file: 
+      - config/common.env
+  sql-server-db:
+    container_name: sql-server-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1533:1433"
+    environment:
+      SA_PASSWORD: "toptal"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - './sqlserver/data:/var/opt/mssql/data'
+  jupyterlab:
+    image: andreper/jupyterlab:2.1.4-spark-3.0.0 
+    container_name: jupyterlab
+    ports:
+      - 8888:8888
+      - 4040:4040
+    volumes:
+      - '.:/root/airflowmount/'
+      - './spark:/opt/workspace/spark'
+  spark-master:
+    image: andreper/spark-master:3.0.0
+    container_name: spark-master
+    ports:
+      - 8000:8080
+      - 7077:7077
+    volumes:
+      - '.:/root/airflowmount/'
+    
+  spark-worker-1:
+    image: andreper/spark-worker:3.0.0
+    container_name: spark-worker-1
+    environment:
+      - SPARK_WORKER_CORES=4
+      - SPARK_WORKER_MEMORY=8g
+    ports:
+      - 8083:8081
+    volumes:
+      - '.:/root/airflowmount/'
+    depends_on:
+      - spark-master
+
+  

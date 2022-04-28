@@ -1,0 +1,4 @@
+apache-airflow-providers-microsoft-mssql==2.0.1
+apache-airflow-providers-apache-spark==2.0.3
+pyodbc==4.0.32
+openpyxl==3.0.9
