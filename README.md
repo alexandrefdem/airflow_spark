@@ -1,4 +1,4 @@
-# Toptal ETL Project
+# ETL Project
 ## Alexandre de Magalhães
 
 The proposed ETL solutions aims to fulfill the requirements for the project. It features a Airflow distributed orchestration tool with access to a spark instance for the three following tasks.
