@@ -83,7 +83,7 @@ services:
     ports:
       - "1533:1433"
     environment:
-      SA_PASSWORD: "toptal"
+      SA_PASSWORD: "sa"
       ACCEPT_EULA: "Y"
     volumes:
       - './sqlserver/data:/var/opt/mssql/data'

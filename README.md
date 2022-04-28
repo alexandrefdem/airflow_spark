@@ -29,7 +29,7 @@ Most of the time all the work can be supervised through airflow web interface.
 | Interface | Login | password | password |
 | ------ | ------ |  ------  |  ------  |
 | Airflow Webserver | airflow | airflow |  http://localhost:8080  |
-| SQL Server  | sa | toptal |  localhost,1533 |
+| SQL Server  | sa | sa |  localhost,1533 |
 | Spark Master  | n/a | n/a |  http://localhost:8000  |
 
 ## License
